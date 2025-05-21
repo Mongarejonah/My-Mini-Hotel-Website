@@ -1,0 +1,40 @@
+<Html>
+<title>DELIGHT HOTEL MANAGEMENT SYSTEM </TITLE>
+<head><div class="logo ">
+	<strong font="Times new roman" size="30"><u>DELIGHT HOTEL</u></strong>
+	</div>
+</head>
+<BODY bgcolor="00000" Align="Center">
+<br><br><!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <script>
+        function forgotPassword() {
+            const email = prompt("Please enter your email address to reset your password:");
+            if (email) {
+                alert("A password reset link has been sent to " + email);
+                // In real implementation, you'd send the email to the server for processing
+            } else {
+                alert("Email address is required to reset your password.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <form action="hotel-menu.html" method="get">
+        <input type="text" placeholder="Enter Username" name="username" required>
+        <br><br>
+
+        <input type="password" placeholder="Enter Password" name="password" required>
+        <br><br>
+
+        <input type="submit" value="Login">
+        <br><br>
+
+        <button type="button" onclick="forgotPassword()">Forgot Password?</button>
+    </form>
+</body>
+</html>
+</BODY>
+</HTML>
