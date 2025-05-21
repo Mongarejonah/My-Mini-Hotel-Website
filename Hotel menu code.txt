@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(to right, #f3ec78, #af4261);
+            color: #333;
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: #000;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: marquee 10s linear infinite;
+            background: linear-gradient(45deg, red, yellow, green, cyan, blue, violet);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #fff;
+        }
+
+        .menu-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 200px;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .item:hover {
+            background-color: #e8f0fe;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .seat-selection, .receipt {
+            margin-top: 30px;
+        }
+
+        .seats button {
+            margin: 5px;
+            padding: 10px;
+        }
+
+        .receipt pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+
+        .message {
+            display: none;
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="marquee-container">
+        <div class="marquee-text">Welcome to Jomo Hotel</div>
+    </div>
+
+    <h2>Foods</h2>
+    <div class="menu-section" id="foodMenu"></div>
+
+    <h2>Drinks</h2>
+    <div class="menu-section" id="drinkMenu"></div>
+
+    <div style="margin-top: 20px;">
+        <button onclick="clearOrder()" style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Clear Order</button>
+    </div>
+
+    <div class="seat-selection hidden" id="seatSection">
+        <h2>Select an Empty Seat</h2>
+        <div class="seats" id="seatsContainer"></div>
+    </div>
+
+    <div class="receipt hidden" id="receiptSection">
+        <h2>Your Receipt</h2>
+        <pre id="receiptText"></pre>
+        <button onclick="printReceipt()" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Print Receipt</button>
+    </div>
+
+    <div class="message" id="thankYouMessage">
+        Please wait at the selected seat as we prepare your order. Thank you!
+    </div>
+
+    <h2 style="color:white; margin-top:50px;">Customer Service</h2>
+    <p style="color:white;">Phone: 0798111066 | Maxphillian Gekara - Manager</p>
+    <p style="color:white;">Email: info@jomohotel.co.ke</p>
+
+    <script>
+        const menuItems = {
+            foods: [
+                { name: "Ugali Beef", price: 250 }, { name: "Chicken Biryani", price: 500 },
+                { name: "Chapati Beans", price: 150 }, { name: "Tilapia Fry", price: 400 },
+                { name: "Pilau", price: 300 }, { name: "Matoke", price: 200 },
+                { name: "Beef Stew", price: 350 }, { name: "Githeri Special", price: 180 },
+                { name: "Fried Rice", price: 280 }, { name: "Samosa Platter", price: 220 },
+                { name: "Ndengu Chapati", price: 170 }, { name: "Chicken Stew", price: 450 },
+                { name: "Pork Fry", price: 380 }, { name: "Fish Stew", price: 420 },
+                { name: "Rice and Beans", price: 160 }, { name: "Sukuma Ugali", price: 130 },
+                { name: "Roast Goat", price: 500 }, { name: "Mukimo", price: 200 },
+                { name: "Spaghetti Bolognese", price: 320 }, { name: "Vegetable Curry", price: 250 },
+                { name: "Nyama Choma", price: 550 }, { name: "Chips Masala", price: 240 },
+                { name: "Beef Burger", price: 450 }, { name: "Hot Dog", price: 180 },
+                { name: "Stuffed Chapati", price: 230 }, { name: "Fried Eggs", price: 120 },
+                { name: "Boiled Maize", price: 80 }, { name: "Grilled Chicken", price: 480 },
+                { name: "Rice Curry", price: 290 }, { name: "Fried Liver", price: 300 }
+            ],
+            drinks: [
+                { name: "Soda", price: 70 }, { name: "Fresh Juice", price: 150 },
+                { name: "Mineral Water", price: 50 }, { name: "Tea", price: 60 },
+                { name: "Coffee", price: 100 }, { name: "Milk Shake", price: 200 },
+                { name: "Lemonade", price: 130 }, { name: "Pineapple Juice", price: 150 },
+                { name: "Mango Smoothie", price: 180 }, { name: "Hot Chocolate", price: 140 },
+                { name: "Green Tea", price: 120 }, { name: "Iced Coffee", price: 170 },
+                { name: "Coconut Water", price: 160 }, { name: "Tonic Water", price: 90 },
+                { name: "Passion Juice", price: 150 }, { name: "Fanta Blackcurrant", price: 80 },
+                { name: "Sparking Water", price: 100 }, { name: "Vanilla Shake", price: 200 },
+                { name: "Strawberry Shake", price: 200 }, { name: "Energy Drink", price: 250 }
+            ]
+        };
+
+        let selectedOrders = [];
+
+        function displayMenu() {
+            const foodMenu = document.getElementById("foodMenu");
+            const drinkMenu = document.getElementById("drinkMenu");
+
+            menuItems.foods.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `<strong>${item.name}</strong><br>KES ${item.price}`;
+                div.onclick = () => addToOrder(item);
+                foodMenu.appendChild(div);
+            });
+
+            menuItems.drinks.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `<strong>${item.name}</strong><br>KES ${item.price}`;
+                div.onclick = () => addToOrder(item);
+                drinkMenu.appendChild(div);
+            });
+        }
+
+        function addToOrder(item) {
+            selectedOrders.push(item);
+            document.getElementById("seatSection").classList.remove("hidden");
+            populateSeats();
+        }
+
+        function populateSeats() {
+            const container = document.getElementById("seatsContainer");
+            container.innerHTML = "";
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = `Seat ${i}`;
+                btn.onclick = () => generateReceipt(i);
+                container.appendChild(btn);
+            }
+        }
+
+        function generateReceipt(seatNumber) {
+            let total = 0;
+            let itemsList = selectedOrders.map(item => {
+                total += item.price;
+                return `- ${item.name}: KES ${item.price}`;
+            }).join('\n');
+
+            const receipt = `
+Jomo Hotel Receipt
+------------------------
+Items Ordered:
+${itemsList}
+
+Seat Number: ${seatNumber}
+------------------------
+Total: KES ${total}
+Thank you!
+            `;
+            document.getElementById("receiptText").textContent = receipt;
+            document.getElementById("receiptSection").classList.remove("hidden");
+        }
+
+        function printReceipt() {
+            document.getElementById("thankYouMessage").style.display = "block";
+            setTimeout(() => {
+                clearOrder();
+                document.getElementById("thankYouMessage").style.display = "none";
+            }, 3000);
+        }
+
+        function clearOrder() {
+            selectedOrders = [];
+            document.getElementById("seatSection").classList.add("hidden");
+            document.getElementById("receiptSection").classList.add("hidden");
+            document.getElementById("receiptText").textContent = "";
+        }
+
+        displayMenu();
+    </script>
+</body>
+</html>
